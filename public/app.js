@@ -651,11 +651,11 @@
 				var dias = fDia-tiempo.getDate();
 
 				if( tiempo.getMonth()+1 == 2 ) {
-					if( dias > 7 || dias > -21 )
+					if( dias > 7 || (dias > -21 && dias < 0) )
 						color = 'verde';
 				}
 				else
-					if( dias > 7 || dias > -23 )
+					if( dias > 7 || (dias > -23 && dias < 0) )
 						color = 'verde';
 
 				return color;
