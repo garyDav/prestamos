@@ -286,7 +286,7 @@
 				$http.post('rest/v1/payment/' , payment )
 					.success(function( response ){
 						
-						self.cargarPrestamos();
+						self.cargarPrestamos(self.pag_actual);
 						d.resolve(response);
 						console.log(response);
 
