@@ -597,13 +597,18 @@
 		return function(fecha) {
 			if(fecha) {
 				var fDia = Number(fecha.substr(8,2));
-				var values = fecha.split("-");
 				var tiempo = new Date();
 				var color = '';
 
+				var dias = fDia-tiempo.getDate();
 
-				if( fDia >= tiempo.getDate() && fDia <= tiempo.getDate()+3 )
-					color = 'rojo';	
+				if( tiempo.getMonth()+1 == 2 ) {
+					if( ( (dias > -1 && dias < 4) || dias < -24 ) )
+						color = 'rojo';
+				}
+				else
+					if( ( (dias > -1 && dias < 4) || dias < -26 ) )
+						color = 'rojo';
 
 				return color;
 			}else {
@@ -615,12 +620,19 @@
 	app.filter('colorAmarillo',function() {
 		return function(fecha) {
 			if(fecha) {
-				var tiempo = new Date();
 				var fDia = Number(fecha.substr(8,2));
+				var tiempo = new Date();
 				var color = '';
 
-				if( fDia > tiempo.getDate()+3 && fDia <= tiempo.getDate()+7 )
-					color = 'amarillo';
+				var dias = fDia-tiempo.getDate();
+
+				if( tiempo.getMonth()+1 == 2 ) {
+					if( (dias > 3 && dias < 8) || (dias > -25 && dias < -20) )
+						color = 'amarillo';
+				}
+				else
+					if( (dias > 3 && dias < 8) || (dias > -27 && dias < -22) )
+						color = 'amarillo';
 
 				return color;
 			}else {
@@ -632,12 +644,19 @@
 	app.filter('colorVerde',function() {
 		return function(fecha) {
 			if(fecha) {
-				var tiempo = new Date();
 				var fDia = Number(fecha.substr(8,2));
+				var tiempo = new Date();
 				var color = '';
 
-				if( fDia > tiempo.getDate()+7 || fDia < tiempo.getDate() )
-					color = 'verde';
+				var dias = fDia-tiempo.getDate();
+
+				if( tiempo.getMonth()+1 == 2 ) {
+					if( dias > 7 || dias > -21 )
+						color = 'verde';
+				}
+				else
+					if( dias > 7 || dias > -23 )
+						color = 'verde';
 
 				return color;
 			}else {
