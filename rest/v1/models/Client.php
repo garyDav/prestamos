@@ -55,8 +55,10 @@ $app->post("/client/",function() use($app) {
 
 
 
-		}else{  // INSERT
+		}else{  // INSERT avatar.png
 
+			if( $request['src'] == '' )
+				$request['src'] = 'avatar.png';
 			$sql = "CALL pInsertClients(
 						'". $request['ci'] . "',
 						'". $request['ex'] . "',

@@ -36,6 +36,9 @@ angular.module('clientsModule').factory('clientsService', ['$http', '$q', functi
 					self.cargarPagina( self.pag_actual  );
 					d.resolve( respuesta );
 
+				}).error(function(err) {
+					d.reject(err);
+					console.error(err);
 				});
 
 			return d.promise;
@@ -67,6 +70,7 @@ angular.module('clientsModule').factory('clientsService', ['$http', '$q', functi
 				.success(function( data ){
 					if(data) {
 						data.clients.forEach(function(element,index,array) {
+							element.ci = Number(element.ci);
 							var values = element.fec_nac.split("-");
 							var dia = values[2];
 							var mes = values[1];

@@ -48,14 +48,13 @@
 					<th><a class="mano" ng-click="columna='fec_nac'; reverse = !reverse;">Edad</a></th>
 					<th><a class="mano" ng-click="columna='sex'; reverse = !reverse;">Sexo</a></th>
 					<th><a class="mano" ng-click="columna='registered'; reverse = !reverse;">Registrado</a></th>
-					<th>Acción</th>
+					<th ng-show="userTYPE == 'supad'">Acción</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="cliente in clientes.clients | filter:busqueda | orderBy:columna:reverse">
 					<td>{{ cliente.id }}</td>
 					<td class="tamanioImg">
-						<img ng-show=" cliente.src == '' " ng-src="app/img/avatar.png" width="110px">
 						<img ng-show=" cliente.src != '' " ng-src="app/photos/{{cliente.src}}" width="110px">
 					</td>
 					<td>{{ cliente.ci }} {{ cliente.ex }}</td>
@@ -85,7 +84,7 @@
 
 					 -->
 
-					<td>
+					<td ng-show="userTYPE == 'supad'">
 						<a ng-click="mostrarModal( cliente )" class="btn btn-warning"><i class="fa fa-edit"></i></a>
 						<a ng-click="eliminar( cliente.id )" class="btn btn-danger"><i class="fa fa-trash"></i></a>
 					</td>
@@ -108,7 +107,7 @@
 			</div>
 		</div>
 
-		<div class="box-footer clearfix">
+		<div class="box-footer clearfix" ng-show="clientes.total_paginas > 1">
           <ul class="pagination pagination-sm no-margin pull-right">
             <li><a class="mano" ng-click="moverA(1)">«</a></li>
 

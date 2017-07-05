@@ -42,7 +42,7 @@ angular.module('clientsModule').controller('clientsCtrl', ['$scope','$routeParam
 	// ================================================
 	$scope.mostrarModal = function( cliente ){
 
-		// console.log( cliente );
+		//console.log( cliente );
 		angular.copy( cliente, $scope.clienteSel );
 		$("#modal_cliente").modal();
 
@@ -53,52 +53,53 @@ angular.module('clientsModule').controller('clientsCtrl', ['$scope','$routeParam
 	// ================================================
 	$scope.guardar = function( cliente, frmCliente){
 
-		if( cliente.src ) {
+		if( !cliente.src )
+			cliente.src = '';
 
-			if( typeof $scope.clienteSel.src == 'object' )
-				upload.saveImg($scope.clienteSel.src).then(function( data ) {
-					if ( data.error == 'not' ) {
-						$scope.clienteSel.src = data.src;
-						clientsService.guardar( cliente ).then(function( dataCli ){
+		if( typeof $scope.clienteSel.src == 'object' )
+			upload.saveImg($scope.clienteSel.src).then(function( data ) {
+				if ( data.error == 'not' ) {
+					$scope.clienteSel.src = data.src;
+					clientsService.guardar( cliente ).then(function( dataCli ){
 
-							// codigo cuando se actualizo
-							$("#modal_cliente").modal('hide');
-							$scope.clienteSel = {};
+						// codigo cuando se actualizo
+						$("#modal_cliente").modal('hide');
+						$scope.clienteSel = {};
 
-							frmCliente.autoValidateFormOptions.resetForm();
-							if( dataCli.error == 'not' )
-								swal("¡Correcto!",data.msj+" ID: "+dataCli.id+" "+dataCli.msj, "success");
-							else
-								swal("¡Error!", dataCli , "error");
+						frmCliente.autoValidateFormOptions.resetForm();
+						if( dataCli.error == 'not' )
+							swal("¡Correcto!",data.msj+" ID: "+dataCli.id+" "+dataCli.msj, "success");
+						else
+							swal("¡Error!", dataCli , "error");
 
-						});
-					} else 
-					if ( data.error == 'yes' )
-						swal("ERROR", "¡"+data.msj+"!", "error");
-					else {
-						swal("ERROR SERVER", "¡"+data+"!", "error");
-						console.error(data);
-					}
-				});
-			else {
-				clientsService.guardar( cliente ).then(function( dataCli ){
+					});
+				} else 
+				if ( data.error == 'yes' )
+					swal("ERROR", "¡"+data.msj+"!", "error");
+				else {
+					swal("ERROR SERVER", "¡"+data+"!", "error");
+					console.error(data);
+				}
+			});
+		else {
+			clientsService.guardar( cliente ).then(function( dataCli ){
 
-					// codigo cuando se actualizo
-					$("#modal_cliente").modal('hide');
-					$scope.clienteSel = {};
+				// codigo cuando se actualizo
+				$("#modal_cliente").modal('hide');
+				$scope.clienteSel = {};
 
-					frmCliente.autoValidateFormOptions.resetForm();
-					if( dataCli.error == 'not' )
-						swal("¡Correcto!", "ID: "+dataCli.id+" "+dataCli.msj, "success");
-					else
-						swal("¡Error!", dataCli , "error");
+				frmCliente.autoValidateFormOptions.resetForm();
+				if( dataCli.error == 'not' )
+					swal("¡Correcto!", "ID: "+dataCli.id+" "+dataCli.msj, "success");
+				else
+					swal("¡Error!", dataCli , "error");
 
-				});
-			}
-
-		} else {
-			swal("ERROR", "¡Inserte una imagen!", "error");
+			});
 		}
+
+		/*} else {
+			swal("ERROR", "¡Inserte una imagen!", "error");
+		}*/
 
 		
 

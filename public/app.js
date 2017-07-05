@@ -181,6 +181,16 @@
 
 	app.factory('mainService', ['$http','$rootScope','$location','$q', function( $http,$rootScope,$location,$q){
 		var self = {
+			'cargando'		: false,
+			'err'     		: false, 
+			'conteo' 		: 0,
+			'give_pay' 		: [],
+			'pag_actual'    : 1,
+			'pag_siguiente' : 1,
+			'pag_anterior'  : 1,
+			'total_paginas' : 1,
+			'paginas'	    : [],
+
 			logout: function() {
 				$http.post('php/destroy_session.php');
 				//$location.path('/login/#/ingresar');
@@ -196,9 +206,29 @@
 					})
 					.error(function(){
 						d.reject();
-						console.error("No se pudo cargar el archivo de configuración");
+						console.error('No se pudo cargar el archivo de configuración');
 					});
 
+				return d.promise;
+			},
+			cargarPrestamos: function(pag) {
+				var d = $q.defer();
+				$http.get('rest/v1/main/give/'+pag+'/'+$rootScope.userID).success(function(response) {
+
+					self.err           = response.err;
+					self.conteo        = response.conteo;
+					self.give_pay      = response.gives;
+					self.pag_actual    = response.pag_actual;
+					self.pag_siguiente = response.pag_siguiente;
+					self.pag_anterior  = response.pag_anterior;
+					self.total_paginas = response.total_paginas;
+					self.paginas       = response.paginas;
+					d.resolve();
+
+				}).error(function(err) {
+					d.reject(err);
+					console.error(err);
+				});
 				return d.promise;
 			},
 			editarUser: function(user) {
@@ -232,6 +262,39 @@
 					.success(function( data ) {
 						d.resolve(data);
 					});
+				return d.promise;
+			},
+			formatDate: function( date ) {
+				var d = new Date(date);
+				var month = '' + (d.getMonth() + 1);
+				var day = '' + d.getDate();
+				var year = d.getFullYear();
+
+				if (month.length < 2) month = '0' + month;
+				if (day.length < 2) day = '0' + day;
+
+				return [year, month, day].join('-');
+			},
+			guardarPayment: function(data) {
+				$('#myModal'+data.id_give).removeClass('fade');
+				$('#myModal'+data.id_give).modal('hide');
+				var payment = JSON.parse( JSON.stringify( data ) );
+				payment.fec_pago = self.formatDate(payment.fec_pago);
+				
+				var d = $q.defer();
+
+				$http.post('rest/v1/payment/' , payment )
+					.success(function( response ){
+						
+						self.cargarPrestamos();
+						d.resolve(response);
+						console.log(response);
+
+					}).error(function(err) {
+						d.reject();
+						console.error(err);
+					});
+
 				return d.promise;
 			}
 		};
@@ -357,8 +420,84 @@
 	// ================================================
 	//   Controlador de principal
 	// ================================================
-	app.controller('principalCtrl', ['$scope', function($scope){
+	app.controller('principalCtrl', ['$scope','mainService', function($scope,mainService){
 		$scope.activar('mPrincipal','','Principal','información');
+
+		$scope.mgives = [];
+		$scope.paymentSelt = {
+			id_give: '',
+			fec_pago_actual: '',
+			fec_pago: '',
+			observation: ''
+		};
+		$scope.viewForm = false;
+		$scope.load = false;
+
+		//Prestamo en el presente año
+		var fec = new Date();
+		$scope.fechaMin = ""+fec.getFullYear()+"-01-01";
+		$scope.fechaMax = ""+(Number(fec.getFullYear())+3)+"-12-31";
+
+		$scope.moverA = function( pag ){
+			$scope.load = true;
+
+			mainService.cargarPrestamos( pag ).then(function() {
+				$scope.mgives = mainService;
+				$scope.load = false;
+				console.log($scope.mgives);
+			});
+
+		};
+
+		$scope.moverA(1);
+		
+
+		$scope.mostrarModal = function( id ){
+
+			$scope.viewForm = false;
+			$scope.paymentSelt = {};
+			$("#myModal"+id).modal();
+
+		};
+
+		$scope.cargarPre = function(fec,id) {
+			$scope.viewForm = true;
+			var values = fec.split("-");
+			var fecha = new Date(Number(values[0]), Number(values[1]-1), Number(values[2]));
+			//var fecha = new Date(fec);
+			$scope.paymentSelt.id_give = id;
+			$scope.paymentSelt.fec_pago_actual = fec;
+			$scope.paymentSelt.fec_pago = fecha;
+			$scope.paymentSelt.observation = 'Depósito en ';
+			//console.log($scope.paymentSelt);
+		};
+
+		$scope.guardarPayment = function( data,frm ) {
+			if(data.fec_pago) {
+				mainService.guardarPayment( data ).then(function(response){
+
+					// codigo cuando se guardo
+					$scope.data = {};
+					$scope.viewForm = false;
+					if ( response.error == 'not' ) {
+						swal("CORRECTO", "¡"+"Pago: "+response.pago+" "+response.msj+"!", "success");
+					} else
+					if ( response.error == 'yes' )
+						swal("ERROR", "¡"+response.msj+"!", "error");
+					else {
+						swal("ERROR SERVER", "¡"+response+"!", "error");
+						console.error(response);
+					}
+					//$(".modal-backdrop").remove();
+				});
+
+			}
+		};
+		$scope.desplegar = function(a,b) {
+			if(a==b)
+				return 'in';
+		}
+
 	}]);
 
 	// ================================================
@@ -392,10 +531,117 @@
 	app.filter( 'reducirTexto', function(){
 		return function(palabra){
 			if( palabra ){
-				if( palabra.length > 22)
-					return palabra.substr(0,22)+' ...';
+				if( palabra.length > 32)
+					return palabra.substr(0,32)+'...';
 				else
 					return palabra;
+			}
+		}
+	});
+
+	app.filter( 'textoCorto', function(){
+		return function(palabra){
+			if( palabra ){
+				if( palabra.length > 16)
+					return palabra.substr(0,16)+'...';
+				else
+					return palabra;
+			}
+		}
+	});
+
+	app.filter( 'anio', function(){
+		return function(fec){
+			if( fec ){
+				if( fec.length > 0)
+					return fec.substr(0,4);
+				else
+					return fec;
+			}
+		}
+	});
+
+	app.filter('timeVerbal',function() {
+		return function(fecha) {
+			if(fecha) {
+				var tiempo = new Date();
+				var fDia = Number(fecha.substr(8,2));
+				var fMes = Number(fecha.substr(5,2));
+				var fAnio = Number(fecha.substr(0,4));
+				var dias = new Array('domingo','lunes','martes','miercoles','jueves','viernes','sábado');
+				var meses = new Array('enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre');
+				var values = fecha.split("-");
+				var fechaObj = new Date(Number(values[0]), Number(values[1]-1), Number(values[2]));
+				var verbal = fecha.substr(8,2)+' de '+meses[fMes-1];
+
+				if( fAnio == tiempo.getUTCFullYear() )
+					if( fMes == (tiempo.getMonth()+1) ) {
+						if( fDia == tiempo.getDate()+1 )
+							verbal = 'Mañana';
+						if( fDia == tiempo.getDate() )
+							verbal = 'Hoy';
+						if( fDia == tiempo.getDate()-1 )
+							verbal = 'Ayer';
+						if( fDia > tiempo.getDate()+1 && fDia <= tiempo.getDate()+7 )
+							verbal = dias[fechaObj.getDay()];
+					}
+
+				return verbal;
+			}else {
+				return fecha;
+			}
+		}
+	});
+
+	app.filter('colorRojo',function() {
+		return function(fecha) {
+			if(fecha) {
+				var fDia = Number(fecha.substr(8,2));
+				var values = fecha.split("-");
+				var tiempo = new Date();
+				var color = '';
+
+
+				if( fDia >= tiempo.getDate() && fDia <= tiempo.getDate()+3 )
+					color = 'rojo';	
+
+				return color;
+			}else {
+				return '';
+			}
+		}
+	});
+
+	app.filter('colorAmarillo',function() {
+		return function(fecha) {
+			if(fecha) {
+				var tiempo = new Date();
+				var fDia = Number(fecha.substr(8,2));
+				var color = '';
+
+				if( fDia > tiempo.getDate()+3 && fDia <= tiempo.getDate()+7 )
+					color = 'amarillo';
+
+				return color;
+			}else {
+				return '';
+			}
+		}
+	});
+
+	app.filter('colorVerde',function() {
+		return function(fecha) {
+			if(fecha) {
+				var tiempo = new Date();
+				var fDia = Number(fecha.substr(8,2));
+				var color = '';
+
+				if( fDia > tiempo.getDate()+7 || fDia < tiempo.getDate() )
+					color = 'verde';
+
+				return color;
+			}else {
+				return '';
 			}
 		}
 	});

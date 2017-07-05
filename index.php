@@ -163,9 +163,9 @@ if( !isset( $_SESSION['uid'] ) ){
     <script src="public/clients/service.js"></script>
     <script src="public/user/service.js"></script>
     <script src="public/give/service.js"></script>
+    <script src="public/reports/service.js"></script>
     <!--
     <script src="public/graphics/service.js"></script>
-    <script src="public/reports/service.js"></script>
     -->
     <!-- Fin Service -->
 

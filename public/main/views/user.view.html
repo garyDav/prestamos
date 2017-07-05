@@ -1,16 +1,19 @@
 <!-- Menu Toggle Button -->
-<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding:3px 15px;">
   <!-- The user image in the navbar-->
-  <img ng-show=" mainUser.src == '' " src="app/img/avatar.png" class="user-image" alt="User Image">
-  <img ng-hide=" mainUser.src == '' " ng-src="app/photos/{{mainUser.src}}" class="user-image" alt="User Image">
+  <div style="width:40px;height:40px;border-radius:50%;overflow:hidden;margin:0 auto;display:inline-block;">
+    <img ng-src="app/photos/{{mainUser.src}}" alt="User Image" style="width:40px;height:auto;">
+  </div>
+  <!--<img ng-src="app/photos/{{mainUser.src}}" class="user-image" alt="User Image">-->
   <!-- hidden-xs hides the username on small devices so only the image appears. -->
-  <span class="hidden-xs">{{mainUser.name}} {{mainUser.last_name}}</span>
+  <span class="hidden-xs" style="position:relative;top:-15px">{{mainUser.name}} {{mainUser.last_name}}</span>
 </a>
 <ul class="dropdown-menu">
   <!-- The user image in the menu -->
   <li class="user-header">
-    <img ng-show=" mainUser.src == '' " src="app/img/avatar.png" class="img-circle" alt="User Image">
-    <img ng-hide=" mainUser.src == '' " ng-src="app/photos/{{mainUser.src}}" class="img-circle" alt="User Image">
+    <div style="width:100px;height:100px;border-radius:50%;overflow:hidden;margin:0 auto;border:3px solid #807dba">
+      <img ng-src="app/photos/{{mainUser.src}}" alt="User Image" style="width:100px;height:auto;">
+    </div>
 
     <p>
       {{ mainUser.name | palabra }} {{ mainUser.last_name | palabra }} - {{userTYPE}}
@@ -24,7 +27,7 @@
         <span>{{mainUser.ci}} {{mainUser.ex}} </span>
       </div>
       <div class="col-xs-6 text-center">
-        <span>{{mainUser.email}} </span>
+        <span title="{{mainUser.email}}">{{mainUser.email | textoCorto}} </span>
       </div>
     </div>
     <!-- /.row -->

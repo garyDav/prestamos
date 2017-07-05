@@ -5,7 +5,7 @@ angular.module('giveModule').factory('giveService', ['$http','$rootScope', '$q',
 		'cargando'		: false,
 		'err'     		: false, 
 		'conteo' 		: 0,
-		'users' 		: [],
+		'give' 			: [],
 		'pag_actual'    : 1,
 		'pag_siguiente' : 1,
 		'pag_anterior'  : 1,
@@ -28,6 +28,7 @@ angular.module('giveModule').factory('giveService', ['$http','$rootScope', '$q',
 
 			var give = JSON.parse( JSON.stringify( data ) );
 			give.fec_pre = self.formatDate(give.fec_pre);
+			give.id_userin = $rootScope.userID;
 			
 			var d = $q.defer();
 
@@ -37,12 +38,15 @@ angular.module('giveModule').factory('giveService', ['$http','$rootScope', '$q',
 					if ( respuesta.error == 'not' ) {
 						self.cargarPagina( self.pag_actual  );
 						d.resolve();
-						swal("CORRECTO", "¡"+respuesta.msj+"!", "success");
+						swal("CORRECTO", "¡"+"ID: "+respuesta.id+" "+respuesta.msj+"!", "success");
 					} else 
 					if ( respuesta.error == 'yes' )
 						swal("ERROR", "¡"+respuesta.msj+"!", "error");
 					else 
-						swal("ERROR SERVER", "¡"+respuesta+"!", "error");;
+						swal("ERROR SERVER", "¡"+respuesta+"!", "error");
+				}).error(function(err) {
+					d.reject();
+					console.error(err);
 				});
 
 			return d.promise;
@@ -57,8 +61,11 @@ angular.module('giveModule').factory('giveService', ['$http','$rootScope', '$q',
 				.success(function( respuesta ){
 
 					self.cargarPagina( self.pag_actual  );
-					d.resolve();
+					d.resolve(respuesta);
 
+				}).error(function(err) {
+					console.log(err);
+					d.reject(err);
 				});
 
 			return d.promise;
@@ -72,8 +79,19 @@ angular.module('giveModule').factory('giveService', ['$http','$rootScope', '$q',
 
 			$http.get('rest/v1/give/' + pag + '/'+ $rootScope.userID )
 				.success(function( data ){
-					console.log( data );
+					//console.log( data );
 					if(data) {
+						data.gives.forEach(function(element,index,array) {
+							var values = element.fec_pre.split("-");
+							//var values = element.fec_pre.replace('-',',');
+							element.fec_pre = new Date(Number(values[0]), Number(values[1]-1), Number(values[2]));
+							//element.fec_pre = new Date(element.fec_pre);
+							element.amount = Number(element.amount);
+							element.month = Number(element.month);
+							element.fine = Number(element.fine);
+							element.interest = Number(element.interest);
+							element.gain = Number(element.gain);
+						});
 
 						self.err           = data.err;
 						self.conteo        = data.conteo;

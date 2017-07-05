@@ -51,30 +51,31 @@
 					<th><a class="mano" ng-click="columna='interest'; reverse = !reverse;">Tasa de interés</a></th>
 					<th><a class="mano" ng-click="columna='type'; reverse = !reverse;">Tipo de prestamo</a></th>
 					<th><a class="mano" ng-click="columna='detail'; reverse = !reverse;">Detalle</a></th>
-					<th><a class="mano" ng-click="columna='gain'; reverse = !reverse;">Ganancia </a></th>
+					<th><a class="mano" ng-click="columna='gain'; reverse = !reverse;">Ganancia asistente </a></th>
 					<th><a class="mano" ng-click="columna='total_capital'; reverse = !reverse;">Total Capital </a></th>
 					<th><a class="mano" ng-click="columna='total_interest'; reverse = !reverse;">Total intereses </a></th>
 					<th><a class="mano" ng-click="columna='total_lender'; reverse = !reverse;">Total Prestamista </a></th>
 					<th><a class="mano" ng-click="columna='total_assistant'; reverse = !reverse;">Total Asistente </a></th>
 
-					<th>Acción</th>
+					<th ng-show="userTYPE == 'supad'">Acción</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="give in gives.give | filter:busqueda | orderBy:columna:reverse">
 					<td>{{ give.id }}</td>
 					<td>{{ give.us_ci }}</td>
-					<td>{{ give.us_name }}</td>
+					<td>{{ give.us_name | palabra }} {{ give.us_last_name | palabra }}</td>
 					<td>{{ give.cli_ci }}</td>
-					<td>{{ give.cli_name }}</td>
+					<td>{{ give.cli_name | palabra }} {{ give.cli_last_name | palabra }}</td>
 					<td>{{ give.amount }}</td>
 					<td>{{ give.fec_pre | date:"fullDate" }}</td>
-					<td>{{ give.month }}</td>
+					<td>{{ give.month }} meses</td>
 					<td>{{ give.fine }}</td>
-					<td>{{ give.interest }}</td>
-					<td>{{ give.type }}</td>
-					<td>{{ give.detail }}</td>
-					<td>{{ give.gain }}</td>
+					<td>{{ give.interest }} %</td>
+					<td ng-show=" give.type == 'men' ">Interes al final capital</td>
+					<td ng-show=" give.type == 'menIn' ">Interes más capital</td>
+					<td title="{{ give.detail }}">{{ give.detail | reducirTexto }}</td>
+					<td>{{ give.gain }} %</td>
 					<td>{{ give.total_capital }}</td>
 					<td>{{ give.total_interest }}</td>
 					<td>{{ give.total_lender }}</td>
@@ -93,9 +94,9 @@
 					date:"shortTime" = 14:30
 					date = 25/04/2017
 
-					 -->
+					-->
 
-					<td>
+					<td ng-show="userTYPE == 'supad'">
 						<a ng-click="mostrarModal( give )" class="btn btn-warning"><i class="fa fa-edit"></i></a>
 						<a ng-click="eliminar( give.id )" class="btn btn-danger"><i class="fa fa-trash"></i></a>
 					</td>
@@ -118,12 +119,12 @@
 			</div>
 		</div>
 
-		<div class="box-footer clearfix">
+		<div class="box-footer clearfix" ng-show="gives.total_paginas > 1">
           <ul class="pagination pagination-sm no-margin pull-right">
             <li><a class="mano" ng-click="moverA(gives.pag_anterior)">«</a></li>
 
 			<li class="active" ng-show="gives.give.length">
-				<a class="mano" >{{ pag }}</a>
+				<a class="mano" >{{ gives.pag_actual }}</a>
 			</li>
 
             <li><a class="mano" ng-click="moverA( gives.pag_siguiente )" >»</a></li>

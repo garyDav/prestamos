@@ -42,7 +42,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="pres in prestamista | filter:presModel | orderBy:colPres:reverseD">
+                  <tr ng-repeat="pres in prestamista | filter:presModel | orderBy:colPres:reverseD | limitTo: 3">
                     <td>{{ pres.id_pres }}</td>
                     <td>{{ pres.ci_pres }}</td>
                     <td>{{ pres.last_name_pres }} {{ pres.name_pres }} </td>
@@ -85,7 +85,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="cli in cliente | filter:cliModel | orderBy:colCli:reverseD">
+                  <tr ng-repeat="cli in cliente | filter:cliModel | orderBy:colCli:reverseD | limitTo: 4">
                     <td>{{ cli.id_cli }}</td>
                     <td>{{ cli.ci_cli }}</td>
                     <td>{{ cli.last_name_cli }} {{ cli.name_cli }} </td>
@@ -149,6 +149,13 @@
             <label>Detalle</label>
             <textarea class="form-control" rows="2" placeholder="Ingrese un detalle"
                 ng-model="giveSel.detail" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Ganancia asistente (%) </label>
+            <input type="number" class="form-control" 
+                placeholder="Cantidad de ganancia para el asistente %"
+                ng-model="giveSel.gain" required>
           </div>
 
 

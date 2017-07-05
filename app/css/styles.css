@@ -1,4 +1,3 @@
-
 /*.creditos {
   background: #e9ebee;
   padding-top: 50px;
@@ -115,7 +114,7 @@
   border-left: 3px solid #A0A0A0;
   padding-left: 5px;
   padding-top: 5px;
-  width: 150px;
+  width: 105px;
   height: 45px;
 }
 
@@ -176,6 +175,10 @@
   text-align: center;
 }
 
+/*.report_alto {
+  height: 50px;
+  overflow: hidden;
+}*/
 
 
 

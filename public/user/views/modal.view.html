@@ -69,7 +69,10 @@
           <div class="form-group" ng-hide="userSel.id">
             <label>Contraseña</label>
             <input type="password" class="form-control" placeholder="*****"
-                ng-model="userSel.pwd" required>
+                ng-model="userSel.pwd"
+                ng-minlength="5"
+                ng-maxlength="15"
+                required>
           </div>
 
           <div class="form-group">

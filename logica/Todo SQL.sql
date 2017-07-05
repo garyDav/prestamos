@@ -37,6 +37,7 @@ CREATE TABLE give (
 	id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	id_user int,
 	id_clients int,
+	id_userin int,
 	amount float,
 	fec_pre date,
 	month smallint,
@@ -49,9 +50,11 @@ CREATE TABLE give (
 	total_interest float,
 	total_lender float,
 	total_assistant float,
+	visible boolean,
 
-	FOREIGN KEY (id_user) REFERENCES user(id),
-	FOREIGN KEY (id_clients) REFERENCES clients(id) 
+	FOREIGN KEY (id_user) REFERENCES user(id) ON DELETE CASCADE,
+	FOREIGN KEY (id_clients) REFERENCES clients(id) ON DELETE CASCADE,
+	FOREIGN KEY (id_userin) REFERENCES user(id) ON DELETE SET NULL
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
@@ -65,7 +68,7 @@ CREATE TABLE payment (
 	assistant float,
 	observation text,
 
-	FOREIGN KEY (id_give) REFERENCES give(id)
+	FOREIGN KEY (id_give) REFERENCES give(id) ON DELETE CASCADE
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
@@ -117,7 +120,7 @@ CREATE PROCEDURE pInsertUser (
 )
 BEGIN
 	IF NOT EXISTS(SELECT id FROM user WHERE email LIKE v_email) THEN
-		INSERT INTO user VALUES(null,v_ci,v_ex,v_name,v_last_name,v_email,v_sex,'',v_pwd,v_type,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+		INSERT INTO user VALUES(null,v_ci,v_ex,v_name,v_last_name,v_email,v_sex,'avatar.png',v_pwd,v_type,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
 		SELECT @@identity AS id,v_type AS tipo, 'not' AS error, 'Registro insertado.' AS msj;
 	ELSE
 		SELECT 'yes' error,'Error: Correo ya registrado.' msj;
@@ -153,23 +156,7 @@ DROP PROCEDURE IF EXISTS pInsertGive;
 CREATE PROCEDURE pInsertGive (
 	IN v_id_user int,
 	IN v_id_clients int,
-	IN v_amount float,
-	IN v_fec_pre date,
-	IN v_month smallint,
-	IN v_fine float,
-	IN v_interest float,
-	IN v_type varchar(5),
-	IN v_detail text
-)
-BEGIN
-	INSERT INTO give VALUES(null,v_id_user,v_id_clients,v_amount,v_fec_pre,v_month,v_fine,v_interest,v_type,v_detail,0,0,0,0,0);
-	SELECT @@identity AS id,'not' AS error, 'Prestamo registrado.' AS msj;
-END //
-
-/*DROP PROCEDURE IF EXISTS pInsertGive;
-CREATE PROCEDURE pInsertGive (
-	IN v_id_user int,
-	IN v_id_clients int,
+	IN v_id_userin int,
 	IN v_amount float,
 	IN v_fec_pre date,
 	IN v_month smallint,
@@ -177,32 +164,12 @@ CREATE PROCEDURE pInsertGive (
 	IN v_interest float,
 	IN v_type varchar(5),
 	IN v_detail text,
-	IN v_gain float,
-	IN v_total_capital float,
-	IN v_total_interest float,
-	IN v_total_lender float,
-	IN v_total_assistant float
+	IN v_gain float
 )
 BEGIN
-	INSERT INTO give VALUES(null,v_id_user,v_id_clients,v_amount,v_fec_pre,v_month,v_fine,v_interest,v_type,v_detail,v_gain,float,v_total_capital,v_total_interest,v_total_lender,v_total_assistant);
-	SELECT @@identity AS id,'not' AS error, 'Prestamo registrado.' AS msj;
-END //*/
-
-DROP PROCEDURE IF EXISTS pInsertPayment;
-CREATE PROCEDURE pInsertPayment (
-	IN v_id_give int,
-	IN v_fec_pago date,
-	IN v_interests float,
-	IN v_capital_shares float,
-	IN v_lender float,
-	IN v_assistant float,
-	IN v_observation text
-)
-BEGIN
-	INSERT INTO give VALUES(null,v_id_give,v_fec_pago,v_interests,v_capital_shares,v_lender,v_assistant,v_observation);
+	INSERT INTO give VALUES(null,v_id_user,v_id_clients,v_id_userin,v_amount,v_fec_pre,v_month,v_fine,v_interest,v_type,v_detail,v_gain,0,0,0,0,1);
 	SELECT @@identity AS id,'not' AS error, 'Prestamo registrado.' AS msj;
 END //
-
 
 
 DROP PROCEDURE IF EXISTS pReporte;
@@ -274,5 +241,105 @@ BEGIN
 			END IF;
 		END IF;
 
+	END IF;
+END //
+
+
+
+--Transacciones
+DROP PROCEDURE IF EXISTS tInsertPayment;
+CREATE PROCEDURE tInsertPayment(
+	IN v_id_give int,
+	IN v_fec_pago_actual date,
+	IN v_fec_pago date,
+	IN v_observation text
+)
+BEGIN
+	DECLARE g_amount float;
+	DECLARE g_month smallint(6);
+	DECLARE g_fine float;
+	DECLARE g_interest float;
+	DECLARE g_type varchar(5);
+	DECLARE g_gain float;
+
+	DECLARE p_interests float;
+	DECLARE p_capital_shares float;
+	DECLARE p_lender float;
+	DECLARE p_assistant float;
+	DECLARE p_month_payment smallint(6);
+	DECLARE p_dif_pagos int;
+	DECLARE i int;
+	DECLARE sum_fine float;
+	DECLARE pamount int;
+
+	DECLARE error int DEFAULT 0;
+	DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+	BEGIN
+		SET error=1;
+		SELECT "yes" error,"Transaccion no completada: tInsertPayment" msj;
+	END;
+
+
+	START TRANSACTION;
+	SET g_amount = (SELECT amount FROM give WHERE id=v_id_give);
+	SET g_month = (SELECT month FROM give WHERE id=v_id_give);
+	SET g_fine = (SELECT fine FROM give WHERE id=v_id_give);
+	SET g_interest = (SELECT interest FROM give WHERE id=v_id_give);
+	SET g_type = (SELECT type FROM give WHERE id=v_id_give);
+	SET g_gain = (SELECT gain FROM give WHERE id=v_id_give);
+	SET p_month_payment = (SELECT COUNT(id) FROM payment WHERE id_give=v_id_give);
+
+	IF g_type = 'men' THEN
+		SET p_interests = g_amount*(g_interest/100);
+		IF g_month = (p_month_payment+1) THEN
+			SET p_capital_shares = g_amount;
+			UPDATE give SET visible=2 WHERE id=v_id_give;
+		ELSE
+			SET p_capital_shares = 0;
+		END IF;
+
+		SET p_dif_pagos = (SELECT DATEDIFF(v_fec_pago,v_fec_pago_actual));
+		SET i = 0;
+		SET sum_fine = 0;
+		while i < p_dif_pagos do
+			SET sum_fine = sum_fine+g_fine;
+			SET i=i+1;
+		end while;
+		SET p_interests = p_interests+sum_fine;
+		SET p_lender = p_interests*((100-g_gain)/100);
+		SET p_assistant = p_interests*(g_gain/100);
+	ELSE
+		SET pamount = g_amount/g_month;
+		SET p_interests = (g_amount-(pamount*p_month_payment))*(g_interest/100);
+
+		IF g_month = (p_month_payment+1) THEN
+			SET pamount = pamount+(g_amount-(pamount*g_month));
+			UPDATE give SET visible=2 WHERE id=v_id_give;
+		END IF;
+		SET p_capital_shares = pamount;
+		SET p_dif_pagos = (SELECT DATEDIFF(v_fec_pago,v_fec_pago_actual));
+		SET i = 0;
+		SET sum_fine = 0;
+		while i < p_dif_pagos do
+			SET sum_fine = sum_fine+g_fine;
+			SET i=i+1;
+		end while;
+		SET p_interests = p_interests+sum_fine;
+		SET p_lender = p_interests*((100-g_gain)/100);
+		SET p_assistant = p_interests*(g_gain/100);
+	END IF;
+	
+	UPDATE give SET total_capital=total_capital+p_capital_shares,
+					total_interest=total_interest+p_interests,
+					total_lender=total_lender+p_lender,
+					total_assistant=total_assistant+p_assistant WHERE id=v_id_give;
+	INSERT INTO payment VALUES(null,v_id_give,v_fec_pago,p_interests,p_capital_shares,p_lender,p_assistant,v_observation);
+	SELECT (p_month_payment+1) AS pago,"not" error,"insertado correctamente" msj;
+
+
+	IF (error = 1) THEN
+		ROLLBACK;
+	ELSE
+		COMMIT;
 	END IF;
 END //

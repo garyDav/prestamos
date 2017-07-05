@@ -19,6 +19,7 @@ require 'models/User.php';
 require 'models/Reporte.php';
 require 'models/Client.php';
 require 'models/Give.php';
+require 'models/Payment.php';
 //end EntidadesRESTFULL
 
 $app->run();
