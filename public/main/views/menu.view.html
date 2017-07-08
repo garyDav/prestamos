@@ -32,7 +32,7 @@
     <li class="header">Opciones</li>
     <!-- Optionally, you can add icons to the links -->
     <li ng-class="mPrincipal"><a ng-href="/prestamos"><i class="fa fa-home"></i> <span>Principal</span></a></li>
-    <li ng-class="mUsers"><a ng-href="users/1"><i class="fa fa-users"></i> <span>Usuarios</span></a></li>
+    <li ng-show="userTYPE == 'supad'" ng-class="mUsers"><a ng-href="users/1"><i class="fa fa-users"></i> <span>Usuarios</span></a></li>
     <li ng-class="mClients"><a ng-href="clients/1"><i class="fa fa-user-plus"></i> <span>Clientes</span></a></li>
     <li ng-class="mGives"><a ng-href="gives"><i class="fa fa-money"></i> <span>Prestamos</span></a></li>
     <li ng-class="mReport"><a ng-href="reports"><i class="fa fa-file-text"></i> <span>Reportes</span></a></li>
