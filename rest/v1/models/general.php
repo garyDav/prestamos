@@ -216,14 +216,14 @@ function get_paginado_main_give( $pagina = 1, $id = 1, $por_pagina = 6 ){
 		$cont=0;
 		$resultado = [];
 		$fecha_pre = $valor->fec_pre;
-		$fecha_actual = date('Y-m-j');
+		$fecha_actual = date('Y-m-d');
 
 		$final_pre = strtotime ( '+'.$valor->month.' month' , strtotime ( $fecha_pre ) ) ;
-		$final_pre = date ( 'Y-m-j' , $final_pre );
+		$final_pre = date ( 'Y-m-d' , $final_pre );
 
 		while($fecha_pre < $final_pre) { //$fecha_pre != $final_pre
 			$fecha_pre = strtotime ( '+1 month' , strtotime ( $fecha_pre ) ) ;
-			$fecha_pre = date ( 'Y-m-j' , $fecha_pre );
+			$fecha_pre = date ( 'Y-m-d' , $fecha_pre );
 			
 			if($cont > $cantidad-1)
 				$resultado[] = (object) array( 'fec_pago'=>$fecha_pre, 'observation'=>'Falta pagar' );
@@ -325,14 +325,14 @@ function get_paginado_reporte( $pagina = 1, $id = 1, $por_pagina = 6 ){
 		$cont=0;
 		$resultado = [];
 		$fecha_pre = $valor->fec_pre;
-		$fecha_actual = date('Y-m-j');
+		$fecha_actual = date('Y-m-d');
 
 		$final_pre = strtotime ( '+'.$valor->month.' month' , strtotime ( $fecha_pre ) ) ;
-		$final_pre = date ( 'Y-m-j' , $final_pre );
+		$final_pre = date ( 'Y-m-d' , $final_pre );
 
 		while($fecha_pre < $final_pre) { //$fecha_pre != $final_pre
 			$fecha_pre = strtotime ( '+1 month' , strtotime ( $fecha_pre ) ) ;
-			$fecha_pre = date ( 'Y-m-j' , $fecha_pre );
+			$fecha_pre = date ( 'Y-m-d' , $fecha_pre );
 			
 			if($cont > $cantidad-1)
 				$resultado[] = (object) array( 'fec_pago'=>$fecha_pre,'interests'=>'0','capital_shares'=>'0','lender'=>'0','assistant'=>'0','observation'=>'Falta pagar...' );
@@ -356,6 +356,94 @@ function get_paginado_reporte( $pagina = 1, $id = 1, $por_pagina = 6 ){
 
 
 	return  $respuesta;
+
+}
+
+
+// ================================================
+//   Funcion paginar tabla give y su payment en reporte
+// ================================================
+function get_paginado_reporte_mes( $mes, $id ) {
+
+	$conex = getConex();
+
+	if( $id == '1' )
+		$sql = "SELECT g.id,g.amount,g.fec_pre,g.month,g.interest,g.type,g.gain,g.visible,u.name u_name,u.last_name u_last_name,us.name us_name,us.last_name us_last_name,c.name cli_name,c.last_name cli_last_name,c.src FROM clients c,give g,user u,user us WHERE g.id_user=u.id AND g.id_clients=c.id AND g.id_userin=us.id AND g.visible<>0 ORDER BY g.id DESC";
+	else
+		$sql = "SELECT g.id,g.amount,g.fec_pre,g.month,g.interest,g.type,g.gain,g.visible,u.name u_name,u.last_name u_last_name,us.name us_name,us.last_name us_last_name,c.name cli_name,c.last_name cli_last_name,c.src FROM clients c,give g,user u,user us WHERE g.id_user=u.id AND g.id_clients=c.id AND g.id_userin=us.id AND (g.id_user='$id' OR g.id_userin='$id') AND g.visible<>0 ORDER BY g.id DESC";
+	$result = $conex->prepare($sql);
+	$result->execute();
+	$datos = $result->fetchAll(PDO::FETCH_OBJ);
+
+	$resultado = [];
+	$fecha_in = date('Y').'-'.$mes.'-'.'01';
+	//$fecha_in = '2017-03-19';
+	$fecha_out = strtotime ( '+1 month' , strtotime ( $fecha_in ) ) ;
+	//$fecha_in = date_create_from_format ( 'Y-m-d' , $fecha_in );
+	//$fecha_in = date ( 'Y-m-d' , $fecha_in->date );
+	$fecha_out = date ( 'Y-m-d' , $fecha_out );
+
+	foreach ($datos as $valor) {
+		$fecha_pre = $valor->fec_pre;
+		$mes_pre = date("m", strtotime($fecha_pre));
+		$final_pre = strtotime ( '+'.$valor->month.' month' , strtotime ( $fecha_pre ) ) ;
+		$fecha_pre = strtotime ( '+1 month' , strtotime ( $fecha_pre ) ) ;
+		$fecha_pre = date ( 'Y-m-d' , $fecha_pre );
+		$final_pre = date ( 'Y-m-d' , $final_pre );
+		/*$resultado[] = (object) array( 
+			'fecha_pre'=>$fecha_pre,
+			'fecha_in'=>$fecha_in,
+			'fecha_out'=>$fecha_out
+			);*/
+		if( !($fecha_pre < $fecha_out && $final_pre >= $fecha_in) )
+			continue;
+		$capital = 0;
+		$interest = 0;
+		$lender = 0;
+		$assistant = 0;
+		$pcapital = 0;
+		$mes_dif = 0;
+		$mes_dif = $mes-$mes_pre;
+		if( $valor->type == 'men' ) {
+			$interest = $valor->amount*($valor->interest/100);
+			$lender = $interest*((100-$valor->gain)/100);
+			$assistant = $interest*($valor->gain/100);
+			if( $final_pre >= $fecha_in && $final_pre < $fecha_out )
+				$capital = $valor->amount;
+		} else if( $valor->type == 'menIn' ) {
+			$pcapital = (int)($valor->amount/$valor->month);
+			$capital = $pcapital;
+			$interest = ($valor->amount-($pcapital*$mes_dif))*($valor->interest/100);
+			$lender = $interest*((100-$valor->gain)/100);
+			$assistant = $interest*($valor->gain/100);
+			if( $final_pre >= $fecha_in && $final_pre < $fecha_out )
+				$capital = $pcapital+($valor->amount-($pcapital*$mes_dif));
+		}
+
+
+
+		$resultado[] = (object) array( 
+			'id'=>$valor->id,
+			'fec_pre'=>$valor->fec_pre,
+			'capital'=>$capital,
+			'interest'=>$interest,
+			'lender'=>$lender,
+			'assistant'=>$assistant,
+			'u_name' => $valor->u_name,
+			'u_last_name' => $valor->u_last_name,
+			'us_name' => $valor->us_name,
+			'us_last_name' => $valor->us_last_name,
+			'cli_name' => $valor->cli_name,
+			'cli_last_name' => $valor->cli_last_name,
+			'src' => $valor->src,
+			'mes_dif' => $mes_dif,
+			'month' => $valor->month
+			);
+
+	}
+
+
+	return  $resultado;
 
 }
 

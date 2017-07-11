@@ -5,20 +5,79 @@
 
 
 <div class="row">
+	<div class="col-md-12">
+	  <div class="box box-success collapsed-box">
+        <div class="box-header with-border">
+          <h3 class="box-title">¿Ingresos en el mes?</h3>
+
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+            </button>
+            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+            </button>
+          </div>
+          <!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+          
+
+
+		  <form name="frmReport"
+            ng-submit="mostrarModal( month, frmReport )"
+	            novalidate="novalidate">
+
+	          <div class="form-group">
+	            <label>Elige un mes</label>
+	            <select type="text" class="form-control supad" placeholder="Seleccione el mes"
+	                ng-model="month" required>
+	                <option value="" disabled selected>Seleccione el mes </option>
+	                <option value="01">Enero</option>
+	                <option value="02">Febrero</option>
+	                <option value="03">Marzo</option>
+	                <option value="04">Abril</option>
+	                <option value="05">Mayo</option>
+	                <option value="06">Junio</option>
+	                <option value="07">Julio</option>
+	                <option value="08">Agosto</option>
+	                <option value="09">Septiembre</option>
+	                <option value="10">Octubre</option>
+	                <option value="11">Noviembre</option>
+	                <option value="12">Diciembre</option>
+	            </select>
+	          </div>
+
+	        <div class="modal-footer">
+	          <button type="submit" class="btn btn-success"><i class="fa fa-calculator"></i> Calcular</button>
+	        </div>
+
+	      </form>
+
+        </div>
+        <!-- /.box-body -->
+      </div>
+	</div>
 
 	<div class="col-md-12">
-	  <div class="box" ng-repeat="give in rgives.give">
+	  <div class="box box-warning" ng-repeat="give in rgives.give">
 		<div class="box-header with-border">
-	      <h3 class="box-title">ID: #{{give.id}} - Capital: <strong>{{give.amount}}</strong> </h3>
+	      <h3 class="box-title">ID: #{{give.id}} - Capital: <strong>{{give.amount}}</strong></h3>
 	      <h4>
 	      	Se prestó a: <strong><a class="mano">{{give.cli_name | palabra}} {{give.cli_last_name | palabra}}</a></strong> por {{give.month}} meses 
 	      	<div ng-show="give.visible == '2'" style="float:right;" class="mano" ng-click="hiddenGive(give.id);"><i class="fa fa-eye-slash fa-2x"></i> </div>
+
+	      	<div class="box-tools pull-right">
+	          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+	          </button>
+	          <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+	          </button>
+	        </div>
 	      </h4>
 	
-		   <div class="box-tools">
-	         <strong>{{give.fec_pre | date:"longDate"}}</strong>
-	       </div>
-
+		  <div class="box-tools">
+	        <strong>{{give.fec_pre | date:"longDate"}}</strong>
+	      </div>
+		  
 	    </div>
 	    <!-- /.box-header -->
 
@@ -82,8 +141,8 @@
 	  </div>
 	</div>
 	<div class="col-md-12">
-	  <div class="box">
-	  	<div class="box-body" ng-show="load">
+	  <div class="box" ng-show="load">
+	  	<div class="box-body">
 			<div class="cargando">
 				<i class="fa fa-spinner fa-pulse fa-2x fa-fw" aria-hidden="true"></i>
 				Cargando...
@@ -109,3 +168,7 @@
 	  </div>
 	</div>
 </div>
+
+
+
+<div ng-include="'public/reports/views/modal.view.html'"></div>

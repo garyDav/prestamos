@@ -61,6 +61,19 @@ angular.module('reportModule').factory('reportService', ['$http','$rootScope', '
 					console.error(err);
 				});
 			});
+		},
+		cargarReporteMes: function(mes) {
+			var d = $q.defer();
+			$http.get('rest/v1/give/reportsmonth/' + mes + '/'+ $rootScope.userID )
+				.success(function( response ){
+					if(response)
+						d.resolve(response);
+				}).error(function(err) {
+					console.log(err);
+					d.reject(err);
+				});
+
+			return d.promise;
 		}
 
 

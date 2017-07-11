@@ -181,9 +181,18 @@
 }*/
 
 
+.rmes {
+  font-size: 14px;
+}
+.rmes .en {
+  font-weight: bold;
+}
 
-
-
+@media screen and (max-width: 400px) {
+  .rmes {
+    font-size: 11px;
+  }
+}
 
 
 

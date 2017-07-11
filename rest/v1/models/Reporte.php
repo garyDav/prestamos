@@ -19,6 +19,20 @@ $app->get('/give/reports/:pagina/:id',function($pagina,$id) use($app) {
 	}
 });
 
+$app->get('/give/reportsmonth/:mes/:id',function($mes,$id) use($app) {
+	try {
+		//sleep(1);
+		$res = get_paginado_reporte_mes( $mes, $id );
+
+		$app->response->headers->set('Content-type','application/json');
+		$app->response->headers->set('Access-Control-Allow-Origin','*');
+		$app->response->status(200);
+		$app->response->body(json_encode( $res ));
+	}catch(PDOException $e) {
+		echo 'Error: '.$e->getMessage();
+	}
+});
+
 
 $app->post("/reportes/",function() use($app) {
 	$objDatos = json_decode(file_get_contents("php://input"));
