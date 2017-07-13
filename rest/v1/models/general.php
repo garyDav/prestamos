@@ -367,9 +367,9 @@ function get_paginado_reporte_mes( $mes, $id ) {
 
 	$conex = getConex();
 	if( $id == '1' )
-		$sql = "SELECT DISTINCT u.id,u.name,u.last_name,'' total FROM clients c,give g,user u,user us WHERE g.id_clients=c.id AND (g.id_user=u.id OR g.id_userin=u.id) ORDER BY u.id DESC";
+		$sql = "SELECT DISTINCT u.id,u.name,u.last_name,'0' total FROM clients c,give g,user u,user us WHERE g.id_clients=c.id AND (g.id_user=u.id OR g.id_userin=u.id) ORDER BY u.id DESC";
 	else
-		$sql = "SELECT DISTINCT u.id,u.name,u.last_name,'' total FROM clients c,give g,user u WHERE g.id_clients=c.id AND (g.id_user=u.id OR g.id_userin=u.id) AND (g.id_user='$id' OR g.id_userin='$id') ORDER BY u.id DESC";
+		$sql = "SELECT DISTINCT u.id,u.name,u.last_name,'0' total FROM clients c,give g,user u WHERE g.id_clients=c.id AND (g.id_user=u.id OR g.id_userin=u.id) AND (g.id_user='$id' OR g.id_userin='$id') ORDER BY u.id DESC";
 	$result = $conex->prepare($sql);
 	$result->execute();
 	$dataUsers = $result->fetchAll(PDO::FETCH_OBJ);

@@ -69,13 +69,23 @@ angular.module('reportModule').factory('reportService', ['$http','$rootScope', '
 			$http.get('rest/v1/give/reportsmonth/' + mes + '/'+ $rootScope.userID )
 				.success(function( response ){
 					if(response){
-						console.log(response);
 						self.tot_cap = 0;
 						self.tot_int = 0;
 						response.resultado.forEach(function(element,index,array) {
+							response.dataUsers.forEach(function(element2,index2,array2) {
+								element2.total = Number(element2.total)
+								if(element.u_id == element2.id) {
+									element2.total += element.lender;
+								} else if(element.us_id == element2.id) {
+									element2.total += element.assistant;
+								}
+							}
+
+
 							self.tot_cap += Number(element.capital);
 							self.tot_int += Number(element.interest);
 						});
+						console.log(response);
 						d.resolve(response);
 					}
 						
