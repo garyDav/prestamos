@@ -409,7 +409,7 @@ function get_paginado_reporte_mes( $mes, $id ) {
 
 
 		$inicio = $valor->fec_pre.' 00:00:00';
-		$fin = date('Y').'-'.$mes.'-'.'01'.' 00:00:00';
+		$fin = $fecha_out.' 00:00:00';
 		 
 		$datetime1=new DateTime($inicio);
 		$datetime2=new DateTime($fin);
