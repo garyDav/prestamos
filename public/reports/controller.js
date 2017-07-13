@@ -7,8 +7,8 @@ angular.module('reportModule').controller('reportCtrl', ['$scope','reportService
 
 	$scope.rgives = [];
 	$scope.rmes = [];
-	$scope.tot_cap = 'heee';
-	$scope.tot_int = 'hooo';
+	$scope.tot_cap = 0;
+	$scope.tot_int = 0;
 	$scope.load = false;
 
 	$scope.moverA = function( pag ){
@@ -30,7 +30,9 @@ angular.module('reportModule').controller('reportCtrl', ['$scope','reportService
 		reportService.cargarReporteMes(month).then(function(response) {
 			$scope.rmes = response;
 			$scope.tot_cap = reportService.tot_cap;
-	      $scope.tot_int = reportService.tot_int;
+	      	$scope.tot_int = reportService.tot_int;
+	      	console.log($scope.tot_cap);
+	      	console.log($scope.tot_int);
 			console.log($scope.rmes);
 			$("#modal_report").modal();
 		});
