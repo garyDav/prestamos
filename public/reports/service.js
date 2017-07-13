@@ -79,7 +79,7 @@ angular.module('reportModule').factory('reportService', ['$http','$rootScope', '
 								} else if(element.us_id == element2.id) {
 									element2.total += element.assistant;
 								}
-							}
+							});
 
 
 							self.tot_cap += Number(element.capital);
