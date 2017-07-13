@@ -385,6 +385,7 @@ function get_paginado_reporte_mes( $mes, $id ) {
 
 	foreach ($datos as $valor) {
 		$fecha_pre = $valor->fec_pre;
+
 		$mes_pre = date("m", strtotime($fecha_pre));
 		$final_pre = strtotime ( '+'.$valor->month.' month' , strtotime ( $fecha_pre ) ) ;
 		$fecha_pre = strtotime ( '+1 month' , strtotime ( $fecha_pre ) ) ;
@@ -403,7 +404,31 @@ function get_paginado_reporte_mes( $mes, $id ) {
 		$assistant = 0;
 		$pcapital = 0;
 		$mes_dif = 0;
-		$mes_dif = $mes-$mes_pre;
+		//$mes_dif = $mes-$mes_pre;
+
+
+
+		$inicio = $valor->fec_pre.' 00:00:00';
+		$fin = date('Y').'-'.$mes.'-'.'01'.' 00:00:00';
+		 
+		$datetime1=new DateTime($inicio);
+		$datetime2=new DateTime($fin);
+		 
+		# obtenemos la diferencia entre las dos fechas
+		$interval=$datetime2->diff($datetime1);
+		 
+		# obtenemos la diferencia en meses
+		$intervalMeses=$interval->format("%m");
+		# obtenemos la diferencia en años y la multiplicamos por 12 para tener los meses
+		$intervalAnos = $interval->format("%y")*12;
+		 
+		$mes_dif = $intervalMeses+$intervalAnos;
+
+
+
+
+
+
 		if( $valor->type == 'men' ) {
 			$interest = $valor->amount*($valor->interest/100);
 			$lender = $interest*((100-$valor->gain)/100);
