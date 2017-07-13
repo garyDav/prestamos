@@ -11,6 +11,8 @@ angular.module('reportModule').factory('reportService', ['$http','$rootScope', '
 		'pag_anterior'  : 1,
 		'total_paginas' : 1,
 		'paginas'	    : [],
+		'tot_cap'       :  0,
+		'tot_int'         : 0,
 
 		cargarPagina: function( pag ){
 
@@ -66,8 +68,14 @@ angular.module('reportModule').factory('reportService', ['$http','$rootScope', '
 			var d = $q.defer();
 			$http.get('rest/v1/give/reportsmonth/' + mes + '/'+ $rootScope.userID )
 				.success(function( response ){
-					if(response)
+					if(response){
+						response.forEach(function(element,index,array) {
+							self.tot_cap += Number(element.capital);
+							self.tot_int += Number(element.interest);
+						});
 						d.resolve(response);
+					}
+						
 				}).error(function(err) {
 					console.log(err);
 					d.reject(err);
