@@ -28,12 +28,12 @@ angular.module('reportModule').controller('reportCtrl', ['$scope','reportService
 	$scope.mostrarModal = function( month,form ){
 
 		reportService.cargarReporteMes(month).then(function(response) {
-			$scope.rmes = response;
+			$scope.rmes = response.resultado;
 			$scope.tot_cap = reportService.tot_cap;
 	      	$scope.tot_int = reportService.tot_int;
 	      	console.log($scope.tot_cap);
 	      	console.log($scope.tot_int);
-			console.log($scope.rmes);
+			//console.log($scope.rmes);
 			$("#modal_report").modal();
 		});
 

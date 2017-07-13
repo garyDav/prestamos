@@ -366,11 +366,19 @@ function get_paginado_reporte( $pagina = 1, $id = 1, $por_pagina = 6 ){
 function get_paginado_reporte_mes( $mes, $id ) {
 
 	$conex = getConex();
+	if( $id == '1' )
+		$sql = "SELECT DISTINCT u.id,u.name,u.last_name,'' total FROM clients c,give g,user u,user us WHERE g.id_clients=c.id AND (g.id_user=u.id OR g.id_userin=u.id) ORDER BY u.id DESC";
+	else
+		$sql = "SELECT DISTINCT u.id,u.name,u.last_name,'' total FROM clients c,give g,user u WHERE g.id_clients=c.id AND (g.id_user=u.id OR g.id_userin=u.id) AND (g.id_user='$id' OR g.id_userin='$id') ORDER BY u.id DESC";
+	$result = $conex->prepare($sql);
+	$result->execute();
+	$dataUsers = $result->fetchAll(PDO::FETCH_OBJ);
+
 
 	if( $id == '1' )
-		$sql = "SELECT g.id,g.amount,g.fec_pre,g.month,g.interest,g.type,g.gain,g.visible,u.name u_name,u.last_name u_last_name,us.name us_name,us.last_name us_last_name,c.name cli_name,c.last_name cli_last_name,c.src FROM clients c,give g,user u,user us WHERE g.id_user=u.id AND g.id_clients=c.id AND g.id_userin=us.id AND g.visible<>0 ORDER BY g.id DESC";
+		$sql = "SELECT g.id,g.amount,g.fec_pre,g.month,g.interest,g.type,g.gain,g.visible,u.id u_id,u.name u_name,u.last_name u_last_name,us.id us_id,us.name us_name,us.last_name us_last_name,c.name cli_name,c.last_name cli_last_name,c.src FROM clients c,give g,user u,user us WHERE g.id_user=u.id AND g.id_clients=c.id AND g.id_userin=us.id AND g.visible<>0 ORDER BY g.id DESC";
 	else
-		$sql = "SELECT g.id,g.amount,g.fec_pre,g.month,g.interest,g.type,g.gain,g.visible,u.name u_name,u.last_name u_last_name,us.name us_name,us.last_name us_last_name,c.name cli_name,c.last_name cli_last_name,c.src FROM clients c,give g,user u,user us WHERE g.id_user=u.id AND g.id_clients=c.id AND g.id_userin=us.id AND (g.id_user='$id' OR g.id_userin='$id') AND g.visible<>0 ORDER BY g.id DESC";
+		$sql = "SELECT g.id,g.amount,g.fec_pre,g.month,g.interest,g.type,g.gain,g.visible,u.id u_id,u.name u_name,u.last_name u_last_name,us.id us_id,us.name us_name,us.last_name us_last_name,c.name cli_name,c.last_name cli_last_name,c.src FROM clients c,give g,user u,user us WHERE g.id_user=u.id AND g.id_clients=c.id AND g.id_userin=us.id AND (g.id_user='$id' OR g.id_userin='$id') AND g.visible<>0 ORDER BY g.id DESC";
 	$result = $conex->prepare($sql);
 	$result->execute();
 	$datos = $result->fetchAll(PDO::FETCH_OBJ);
@@ -454,8 +462,10 @@ function get_paginado_reporte_mes( $mes, $id ) {
 			'interest'=>$interest,
 			'lender'=>$lender,
 			'assistant'=>$assistant,
+			'u_id' => $valor->u_id,
 			'u_name' => $valor->u_name,
 			'u_last_name' => $valor->u_last_name,
+			'us_id' => $valor->us_id,
 			'us_name' => $valor->us_name,
 			'us_last_name' => $valor->us_last_name,
 			'cli_name' => $valor->cli_name,
@@ -468,7 +478,10 @@ function get_paginado_reporte_mes( $mes, $id ) {
 	}
 
 
-	return  $resultado;
+	return array(
+		'dataUsers' => $dataUsers, 
+		'resultado' => $resultado
+		);
 
 }
 

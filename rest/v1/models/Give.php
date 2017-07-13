@@ -96,7 +96,6 @@ $app->post("/give/",function() use($app) {
 						SET
 							id_user = '". $request['id_user'] ."',
 							id_clients = '". $request['id_clients'] ."',
-							id_userin = '". $request['id_userin'] ."',
 							amount = '". $request['amount'] ."',
 							fec_pre = '". $request['fec_pre'] ."',
 							month = '". $request['month'] ."',

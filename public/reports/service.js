@@ -69,9 +69,10 @@ angular.module('reportModule').factory('reportService', ['$http','$rootScope', '
 			$http.get('rest/v1/give/reportsmonth/' + mes + '/'+ $rootScope.userID )
 				.success(function( response ){
 					if(response){
+						console.log(response);
 						self.tot_cap = 0;
 						self.tot_int = 0;
-						response.forEach(function(element,index,array) {
+						response.resultado.forEach(function(element,index,array) {
 							self.tot_cap += Number(element.capital);
 							self.tot_int += Number(element.interest);
 						});
