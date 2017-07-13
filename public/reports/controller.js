@@ -7,8 +7,8 @@ angular.module('reportModule').controller('reportCtrl', ['$scope','reportService
 
 	$scope.rgives = [];
 	$scope.rmes = [];
-	$scope.tot_cap = 0;
-	$scope.tot_int = 0;
+	$scope.tot_cap = 'heee';
+	$scope.tot_int = 'hooo';
 	$scope.load = false;
 
 	$scope.moverA = function( pag ){
