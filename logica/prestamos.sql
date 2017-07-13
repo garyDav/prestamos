@@ -1,13 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.2
--- http://www.phpmyadmin.net
+-- version 4.7.0
+-- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 05-07-2017 a las 08:50:41
--- Versión del servidor: 10.1.13-MariaDB
--- Versión de PHP: 7.0.8
+-- Tiempo de generación: 13-07-2017 a las 15:34:58
+-- Versión del servidor: 10.1.22-MariaDB
+-- Versión de PHP: 7.1.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -239,7 +241,17 @@ CREATE TABLE `clients` (
 --
 
 INSERT INTO `clients` (`id`, `ci`, `ex`, `name`, `last_name`, `civil_status`, `profession`, `address`, `cellphone1`, `cellphone2`, `src`, `fec_nac`, `sex`, `registered`) VALUES
-(1, 10344150, 'Ch', 'Rufina', 'Callaguara', 'casad@', 'Comerciante', 'Cll: America S/N', '0000', '0000', 'avatar.png', '1966-06-16', 'Femenino', '2017-07-04');
+(1, 10344150, 'Ch', 'Rufina', 'Callaguara', 'casad@', 'Comerciante', 'Cll: America S/N', '0000', '0000', 'avatar.png', '1966-06-16', 'Femenino', '2017-07-04'),
+(2, 1145633, 'Ch', 'José Luis', 'Zegarra Sossa', 'concubin@', 'Empleado público', 'Calle independencia S/N', '0000', '0000', 'avatar.png', '1970-09-21', 'Masculino', '2017-07-05'),
+(3, 3635050, 'Ch', 'Antolin Esteban', 'Ortiz Bautista', 'concubin@', 'Empleado público', 'Calle Barrio Villa San Isidro S/N', '0000', '0000', 'avatar.png', '1970-09-02', 'Masculino', '2017-07-05'),
+(4, 111111, 'Ch', 'Laura', 'de Zarate', 'casad@', 'Comerciante', 'Cll: Avaroa Nº', '0000', '0000', 'avatar.png', '1998-06-17', 'Femenino', '2017-07-08'),
+(5, 22222, 'Ch', 'Danitza', 'Zarate E.', 'concubin@', 'Comerciante', 'falta', '0000', '0000', 'avatar.png', '1994-07-15', 'Femenino', '2017-07-13'),
+(6, 1883028, 'Tj', 'Teodora', 'Condori Churata', 'concubin@', 'Labores de casa', 'Barrio Cascadita S/N', '0000', '0000', 'avatar.png', '1970-05-03', 'Femenino', '2017-07-13'),
+(7, 4632805, 'Ch', 'Sebastiana', 'Alaca Churqui de Huanca', 'casad@', 'Labores de casa', 'Zona bajo Aranjuez S/N', '0000', '0000', 'avatar.png', '1970-07-09', 'Femenino', '2017-07-13'),
+(8, 5633757, 'Ch', 'Elizabeth', 'Serrudo Zeballos', 'solter@', 'Labores de casa', 'Barrio Aranjuez S/N', '0000', '0000', 'avatar.png', '1986-06-12', 'Femenino', '2017-07-13'),
+(9, 7512668, 'Ch', 'Roberta', 'Medina Yarui', 'solter@', 'Labores de casa', 'Res. en Lechuguillas', '0000', '0000', 'avatar.png', '1970-04-17', 'Femenino', '2017-07-13'),
+(10, 5485549, 'Ch', 'Eva', 'Avendaño Sanchez', 'solter@', 'Labores de casa', 'Barrio America S/N', '0000', '0000', 'avatar.png', '1973-01-23', 'Femenino', '2017-07-13'),
+(11, 4083972, 'Ch', 'Dania', 'Reynoso Villegas', 'solter@', 'Estudiante', 'J. prudencio bustillos N°656', '0000', '0000', 'avatar.png', '1976-04-11', 'Femenino', '2017-07-13');
 
 -- --------------------------------------------------------
 
@@ -272,7 +284,17 @@ CREATE TABLE `give` (
 --
 
 INSERT INTO `give` (`id`, `id_user`, `id_clients`, `id_userin`, `amount`, `fec_pre`, `month`, `fine`, `interest`, `type`, `detail`, `gain`, `total_capital`, `total_interest`, `total_lender`, `total_assistant`, `visible`) VALUES
-(1, 3, 1, 2, 10000, '2017-03-19', 12, 50, 4, 'men', 'Cliente confiable', 20, 0, 1200, 960, 240, 1);
+(1, 3, 1, 2, 10000, '2017-03-19', 12, 50, 4, 'men', 'Cliente confiable', 20, 0, 1600, 1280, 320, 1),
+(2, 3, 2, 2, 2500, '2017-05-06', 3, 50, 4, 'men', 'Cliente Confiable', 20, 0, 200, 160, 40, 1),
+(3, 3, 3, 2, 3500, '2017-05-06', 3, 50, 4, 'men', 'Cliente confiable', 20, 0, 280, 224, 56, 1),
+(4, 1, 4, 2, 15000, '2017-06-07', 12, 50, 4, 'men', 'Préstamo para el alquiler', 0, 0, 600, 600, 0, 1),
+(5, 3, 6, 2, 7000, '2017-05-21', 12, 50, 4, 'men', 'Préstamo alargado, por 12 meses mas, código amarillo', 20, 0, 560, 448, 112, 1),
+(6, 3, 10, 2, 5000, '2017-02-17', 12, 50, 4, 'men', 'Cliente confiable', 20, 0, 1000, 800, 200, 1),
+(7, 3, 9, 2, 7000, '2017-02-24', 12, 50, 4, 'men', 'Cliente confiable', 20, 0, 1400, 1120, 280, 1),
+(8, 3, 8, 2, 8000, '2017-01-18', 12, 50, 4, 'men', 'Código Verde', 20, 0, 1920, 1504, 416, 1),
+(9, 3, 7, 2, 16000, '2016-12-22', 12, 100, 4, 'men', 'Código Verde', 20, 0, 4480, 3456, 1024, 1),
+(10, 3, 11, 2, 5500, '2017-05-23', 5, 50, 4, 'men', 'Código verde', 20, 0, 440, 352, 88, 1),
+(11, 3, 5, 2, 5000, '2017-06-27', 9, 50, 4, 'men', 'Prestamos alargado,  10 meses previamente, código amarillo', 20, 0, 200, 160, 40, 1);
 
 -- --------------------------------------------------------
 
@@ -296,9 +318,43 @@ CREATE TABLE `payment` (
 --
 
 INSERT INTO `payment` (`id`, `id_give`, `fec_pago`, `interests`, `capital_shares`, `lender`, `assistant`, `observation`) VALUES
-(1, 1, '2017-04-19', 400, 0, 320, 80, 'Pago al contado'),
-(2, 1, '2017-05-19', 400, 0, 320, 80, 'Depósito en UNION'),
-(3, 1, '2017-06-19', 400, 0, 320, 80, 'Depósito en UNION');
+(40, 9, '2017-01-22', 640, 0, 448, 192, 'Depósito en '),
+(41, 9, '2017-02-22', 640, 0, 448, 192, 'Depósito en '),
+(42, 8, '2017-02-18', 320, 0, 224, 96, 'Depósito en '),
+(43, 10, '2017-06-23', 220, 0, 176, 44, 'Depósito en '),
+(44, 10, '2017-07-23', 220, 0, 176, 44, 'Depósito en '),
+(45, 9, '2017-03-22', 640, 0, 512, 128, 'Depósito en '),
+(46, 9, '2017-04-22', 640, 0, 512, 128, 'Depósito en '),
+(47, 9, '2017-05-22', 640, 0, 512, 128, 'Depósito en '),
+(48, 9, '2017-06-22', 640, 0, 512, 128, 'Depósito en '),
+(49, 9, '2017-07-22', 640, 0, 512, 128, 'Depósito en '),
+(50, 8, '2017-03-18', 320, 0, 256, 64, 'Depósito en '),
+(51, 8, '2017-04-18', 320, 0, 256, 64, 'Depósito en '),
+(52, 8, '2017-05-18', 320, 0, 256, 64, 'Depósito en '),
+(53, 8, '2017-06-18', 320, 0, 256, 64, 'Depósito en '),
+(54, 8, '2017-07-18', 320, 0, 256, 64, 'Depósito en '),
+(55, 7, '2017-03-24', 280, 0, 224, 56, 'Depósito en '),
+(56, 7, '2017-04-24', 280, 0, 224, 56, 'Depósito en '),
+(57, 7, '2017-05-24', 280, 0, 224, 56, 'Depósito en '),
+(58, 7, '2017-06-24', 280, 0, 224, 56, 'Depósito en '),
+(59, 7, '2017-07-24', 280, 0, 224, 56, 'Depósito en '),
+(60, 6, '2017-03-17', 200, 0, 160, 40, 'Depósito en '),
+(61, 6, '2017-04-17', 200, 0, 160, 40, 'Depósito en '),
+(62, 6, '2017-05-17', 200, 0, 160, 40, 'Depósito en '),
+(63, 6, '2017-06-17', 200, 0, 160, 40, 'Depósito en '),
+(64, 6, '2017-07-17', 200, 0, 160, 40, 'Depósito en '),
+(65, 5, '2017-06-21', 280, 0, 224, 56, 'Depósito en '),
+(66, 5, '2017-07-21', 280, 0, 224, 56, 'Depósito en '),
+(67, 4, '2017-07-07', 600, 0, 600, 0, 'Depósito en '),
+(68, 3, '2017-06-06', 140, 0, 112, 28, 'Depósito en '),
+(69, 3, '2017-07-06', 140, 0, 112, 28, 'Depósito en '),
+(70, 2, '2017-06-06', 100, 0, 80, 20, 'Depósito en '),
+(71, 2, '2017-07-06', 100, 0, 80, 20, 'Depósito en '),
+(72, 1, '2017-04-19', 400, 0, 320, 80, 'Depósito en '),
+(73, 1, '2017-05-19', 400, 0, 320, 80, 'Depósito en '),
+(74, 1, '2017-06-19', 400, 0, 320, 80, 'Depósito en '),
+(75, 1, '2017-07-19', 400, 0, 320, 80, 'Depósito en '),
+(76, 11, '2017-07-27', 200, 0, 160, 40, 'Depósito en ');
 
 -- --------------------------------------------------------
 
@@ -326,9 +382,10 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `ci`, `ex`, `name`, `last_name`, `email`, `sex`, `src`, `pwd`, `type`, `last_connection`, `registered`) VALUES
-(1, 10917763, 'Lp', 'Gary David', 'Guzmán Muñoz', 'gary@gmail.com', 'Masculino', 'whatsapp image 2017-05-28 at 2.18.37 am.-921.jpeg', '585f7f3723df82f91fffd25a5c6900597cd4d1c1', 'supad', '2017-07-04 17:57:13', '2017-07-04'),
+(1, 10917763, 'Lp', 'Gary David', 'Guzmán Muñoz', 'gary.2810.dav@gmail.com', 'Masculino', 'whatsapp image 2017-05-28 at 2.18.37 am.-921.jpeg', '39757e328cf361b2577a6a4bb509172f6d41f6d0', 'supad', '2017-07-04 17:57:13', '2017-07-04'),
 (2, 4086001, 'Ch', 'Elizabeth', 'Muñoz Escobar', 'elizabethme79@hotmail.com', 'Femenino', '19399698_10156007915758484_3742577124046735941_n-840.jpeg', '585f7f3723df82f91fffd25a5c6900597cd4d1c1', 'user', '2017-07-04 18:14:17', '2017-07-04'),
-(3, 3505115, 'Pt', 'Daniel', 'Guzmán Zenteno', 'gz_dann.24@hotmail.com', 'Masculino', '1235172_152985218236104_1920928629_n-742.jpeg', '585f7f3723df82f91fffd25a5c6900597cd4d1c1', 'admin', '2017-07-04 18:20:37', '2017-07-04');
+(3, 3505115, 'Pt', 'Daniel', 'Guzmán Zenteno', 'gz_dann.24@hotmail.com', 'Masculino', '1235172_152985218236104_1920928629_n-742.jpeg', '585f7f3723df82f91fffd25a5c6900597cd4d1c1', 'admin', '2017-07-04 18:20:37', '2017-07-04'),
+(4, 7578870, 'Ch', 'Ilsen', 'Romero Caraballo', 'terryselt@gmail.com', 'Femenino', 'attack on titan 22-859.jpeg', '585f7f3723df82f91fffd25a5c6900597cd4d1c1', 'admin', '2017-07-07 22:12:08', '2017-07-07');
 
 --
 -- Índices para tablas volcadas
@@ -370,22 +427,22 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT de la tabla `clients`
 --
 ALTER TABLE `clients`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
 -- AUTO_INCREMENT de la tabla `give`
 --
 ALTER TABLE `give`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
 -- AUTO_INCREMENT de la tabla `payment`
 --
 ALTER TABLE `payment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
 --
 -- AUTO_INCREMENT de la tabla `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- Restricciones para tablas volcadas
 --
@@ -403,6 +460,7 @@ ALTER TABLE `give`
 --
 ALTER TABLE `payment`
   ADD CONSTRAINT `payment_ibfk_1` FOREIGN KEY (`id_give`) REFERENCES `give` (`id`) ON DELETE CASCADE;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -33,8 +33,6 @@ angular.module('reportModule').controller('reportCtrl', ['$scope','reportService
 	      	$scope.tot_int = reportService.tot_int;
 			$scope.rmes = response.resultado;
 			$scope.rmesUsers = response.dataUsers;
-	      	console.log($scope.tot_cap);
-	      	console.log($scope.tot_int);
 			//console.log($scope.rmes);
 			$("#modal_report").modal();
 		});
