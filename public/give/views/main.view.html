@@ -47,7 +47,7 @@
   <!-- Acordeon -->
 
 
-  <div class="panel-group" id="accordion" role="tablist">
+  <div class="panel-group" id="accordion" role="tablist" ng-hide="load || !mgives.give_pay.length">
 	<div class="panel panel-default" ng-repeat="give in mgives.give_pay | filter:busqueda | orderBy:columna">
 	  <div class="panel-heading margin-padding" rol="tab" id="heading{{give.id}}">
 		<h2 class="panel-title">
