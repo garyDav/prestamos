@@ -53,6 +53,11 @@
 
 
       <p><strong>Total capital: </strong> {{tot_cap}} <strong>Total interes: </strong>{{tot_int}}</p>
+      <p>
+        <span ng-repeat="rus in rmesUsers">
+          <strong>{{rus.name | palabra}} {{rus.last_name | palabra}}: </strong>{{rus.total}}
+        </span>
+      </p>
       </div>
 
     </div><!-- /.modal-content -->
