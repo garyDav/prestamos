@@ -9,7 +9,7 @@ angular.module('reportModule').controller('reportCtrl', ['$scope','reportService
 	$scope.rmes = [];
 	$scope.tot_cap = 0;
 	$scope.tot_int = 0;
-	$scope.load = false;
+	$scope.load = true;
 
 	$scope.moverA = function( pag ){
 		$scope.load = true;
