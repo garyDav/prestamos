@@ -21,6 +21,17 @@
         <!-- /.box-header -->
         <div class="box-body">
           
+			
+
+		  <!-- /.filtros -->
+		  <div class="filtros">
+		  <div class="busqueda linea b-largo">
+		    <label for="busqueda"><i class="fa fa-search mano" aria-hidden="true"></i></label>
+		    <input id="busqueda" type="text" placeholder="Busque aqui..." ng-model="busqueda">
+		  </div>
+		  </div>
+		  <!-- /.Fin filtros -->
+
 
 
 		  <form name="frmReport"
@@ -59,7 +70,7 @@
 	</div>
 
 	<div class="col-md-12">
-	  <div class="box box-warning" ng-repeat="give in rgives.give">
+	  <div class="box box-warning" ng-repeat="give in rgives.give | filter:busqueda">
 		<div class="box-header with-border">
 	      <h3 class="box-title">ID: #{{give.id}} - Capital: <strong>{{give.amount}}</strong></h3>
 	      <h4>
