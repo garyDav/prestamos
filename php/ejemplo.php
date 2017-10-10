@@ -1,5 +1,6 @@
 <?php
 
+echo date("m-d").'<br>';
 echo date("Y").'<br>';
 $fecha = '2017-01-19';
 $fecha2 = '2017-07-01';
